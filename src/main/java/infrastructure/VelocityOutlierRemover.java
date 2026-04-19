@@ -11,8 +11,15 @@ import java.util.List;
 
 public class VelocityOutlierRemover extends AbstractOutlierRemover {
 
-    private final static double VELOCITY_THRESHOLD = 8.3;
+    private final double velocityThreshold;
+    private final int windowSize;
     private final static double DISTANCE_THRESHOLD_FOR_ZERO_DT = 100.0;
+
+    public VelocityOutlierRemover(double velocityThreshold, int windowSize) {
+        super(10);
+        this.velocityThreshold = velocityThreshold;
+        this.windowSize = windowSize;
+    }
 
     @Override
     protected RemoveResult removeCoordinates(GpsTrack gpsTrack) {
@@ -20,7 +27,7 @@ public class VelocityOutlierRemover extends AbstractOutlierRemover {
         List<Coordinate> removed = new ArrayList<>();
 
         for (int idx = 0; idx < gpsTrack.size(); idx++) {
-            List<Coordinate> window = gpsTrack.window(idx, 5);
+            List<Coordinate> window = gpsTrack.window(idx, windowSize);
             Coordinate target = gpsTrack.get(idx);
 
             Coordinate medianCoordinate = getMedianCoordinate(window);
@@ -37,7 +44,7 @@ public class VelocityOutlierRemover extends AbstractOutlierRemover {
                     new Coordinate(medianCoordinate.longitude(), medianCoordinate.latitude(), medianTimestamp)
                 );
 
-                if (velocity > VELOCITY_THRESHOLD) {
+                if (velocity > velocityThreshold) {
                     removed.add(target);
                 } else {
                     cleaned.add(target);

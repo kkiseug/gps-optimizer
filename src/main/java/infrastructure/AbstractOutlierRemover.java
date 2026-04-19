@@ -10,15 +10,19 @@ import java.util.List;
 
 public abstract class AbstractOutlierRemover implements OutlierRemover {
 
-    private final static int MINIMUM_POINTS = 10;
+    protected final int minimumPoints;
+
+    protected AbstractOutlierRemover(int minimumPoints) {
+        this.minimumPoints = minimumPoints;
+    }
 
     @Override
     public RemoveResult remove(GpsTrack gpsTrack) {
-        if (gpsTrack.size() < MINIMUM_POINTS) {
+        if (gpsTrack.size() < minimumPoints) {
             return new RemoveResult(
                 gpsTrack,
                 List.of(),
-                List.of(new Warning("제거하기 위한 최소 개수 (10개)를 만족하지 않습니다."))
+                List.of(new Warning("제거하기 위한 최소 개수 (" + minimumPoints + "개)를 만족하지 않습니다."))
             );
         }
 

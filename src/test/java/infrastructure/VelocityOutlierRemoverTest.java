@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.*;
 
 class VelocityOutlierRemoverTest {
 
-    private final VelocityOutlierRemover remover = new VelocityOutlierRemover();
+    private final VelocityOutlierRemover remover = new VelocityOutlierRemover(8.3, 5);
 
     private Coordinate coord(double lon, double lat, long epochSecond) {
         return new Coordinate(lon, lat, Instant.ofEpochSecond(epochSecond));
@@ -54,7 +54,7 @@ class VelocityOutlierRemoverTest {
         void outlierRemoved() {
             List<Coordinate> coords = normalTrack(10);
             // 5초 만에 10km 이동 → 2000 m/s
-            coords.set(5, coord(127.1276, 37.4979, 26L));
+            coords.set(5, coord(127.1276, 37.4979, 25L));
             GpsTrack track = new GpsTrack(coords);
 
             RemoveResult result = remover.remove(track);
@@ -108,8 +108,8 @@ class VelocityOutlierRemoverTest {
         @DisplayName("10개 중 2개 제거되면 제거율은 0.2이다")
         void removalRateCalculation() {
             List<Coordinate> coords = normalTrack(10);
-            coords.set(3, coord(127.1276, 37.4979, 16L));
-            coords.set(7, coord(127.2276, 37.4979, 36L));
+            coords.set(3, coord(127.1276, 37.4979, 15L));
+            coords.set(7, coord(127.2276, 37.4979, 35L));
             GpsTrack track = new GpsTrack(coords);
 
             RemoveResult result = remover.remove(track);

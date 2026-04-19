@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.*;
 class AbstractOutlierRemoverTest {
 
     // 최소 포인트, 제거율 경고는 공통 로직이라 여기서 테스트
-    private final VelocityOutlierRemover remover = new VelocityOutlierRemover();
+    private final VelocityOutlierRemover remover = new VelocityOutlierRemover(8.3, 5);
 
     private Coordinate coord(double lon, double lat, long epochSecond) {
         return new Coordinate(lon, lat, Instant.ofEpochSecond(epochSecond));
@@ -90,6 +90,7 @@ class AbstractOutlierRemoverTest {
             coords.set(8, coord(127.4276, 37.4979, 40L));
             GpsTrack track = new GpsTrack(coords);
 
+            // 10개 중 4개가 튐 -> 제거율 40%
             RemoveResult result = remover.remove(track);
 
             assertThat(result.warnings())

@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.*;
 
 class LengthOutlierRemoverTest {
 
-    private final LengthOutlierRemover remover = new LengthOutlierRemover();
+    private final LengthOutlierRemover remover = new LengthOutlierRemover(100, 5);
 
     private Coordinate coord(double lon, double lat) {
         return new Coordinate(lon, lat, null);

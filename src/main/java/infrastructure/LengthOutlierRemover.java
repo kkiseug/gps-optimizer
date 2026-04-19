@@ -9,7 +9,14 @@ import java.util.List;
 
 public class LengthOutlierRemover extends AbstractOutlierRemover {
 
-    private final static int DISTANCE_THRESHOLD = 100;
+    private final double distanceThreshold;
+    private final int windowSize;
+
+    public LengthOutlierRemover(double distanceThreshold, int windowSize) {
+        super(10);
+        this.distanceThreshold = distanceThreshold;
+        this.windowSize = windowSize;
+    }
 
     @Override
     protected RemoveResult removeCoordinates(GpsTrack gpsTrack) {
@@ -17,22 +24,23 @@ public class LengthOutlierRemover extends AbstractOutlierRemover {
         List<Coordinate> removed = new ArrayList<>();
 
         for (int idx = 0; idx < gpsTrack.size(); idx++) {
-            List<Coordinate> window = gpsTrack.window(idx, 5);
+            List<Coordinate> window = gpsTrack.window(idx, windowSize);
             Coordinate target = gpsTrack.get(idx);
 
-            List<Coordinate> others = window.stream()
-                .filter(c -> !c.equals(target))  // 판단 대상 제외
-                .toList();
-
-            Coordinate medianCoordinate = getMedianCoordinate(others);
+            // 윈도우 전체(target 포함)를 사용하여 중앙값 계산 (Velocity와 동일하게 일관성 유지)
+            Coordinate medianCoordinate = getMedianCoordinate(window);
 
             double distance = target.distanceFrom(medianCoordinate);
 
-            if (distance > DISTANCE_THRESHOLD) {
+            if (distance > distanceThreshold) {
                 removed.add(target);
             } else {
                 cleaned.add(target);
             }
+        }
+
+        if (cleaned.size() < GpsTrack.MINIMUM_COORD_SIZE) {
+            return new RemoveResult(gpsTrack, List.of(), List.of(new Warning("제거 후 남은 좌표가 너무 적어 제거를 수행하지 않았습니다.")));
         }
 
         List<Warning> warnings = generateWarnings(gpsTrack, removed);
