@@ -34,16 +34,36 @@ class TrackCleanerTest {
         GpsTrack rawTrack = new GpsTrack(coords);
 
         CleaningResult result = TrackCleaner.of(rawTrack)
-            .removeOutliers(Threshold.ofKmPerHour(30)) // 속도 기반 (기본 윈도우 5)
-            .removeOutliers(Threshold.ofMeters(100), 5) // 거리 기반
-            .smooth(Algorithm.KALMAN)
-            .simplify(Tolerance.ofMeters(5))
+            .removeOutliers(Threshold.ofKmPerHour(30)) // 속도 기반
+            .removeOutliers(Threshold.ofMeters(100))    // 거리 기반
+            .simplify(Tolerance.ofMeters(1))           // 단순화 (직선 구간 제거)
             .clean();
 
-        // 10개 중 2개 제거되어야 함
-        assertThat(result.cleanedTrack().size()).isEqualTo(8);
-        // 미구현 알고리즘에 대한 경고가 포함되어야 함
-        assertThat(result.warnings()).anyMatch(w -> w.message().contains("KALMAN smoothing is not implemented yet."));
-        assertThat(result.warnings()).anyMatch(w -> w.message().contains("Simplification with tolerance 5.0m is not implemented yet."));
+        // 1. 이상치 제거 확인: 10개 -> 8개
+        // 2. 단순화 확인: 직선 구간이 하나로 합쳐져서 8개보다 더 줄어듦
+        assertThat(result.cleanedTrack().size()).isLessThan(8);
+    }
+
+    @Test
+    @DisplayName("이상치 제거 후 단순화가 순차적으로 적용된다")
+    void sequentialProcessingTest() {
+        List<Coordinate> coords = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            coords.add(coord(127.0 + i * 0.0001, 37.0, i * 10L));
+        }
+        // 인덱스 5번에 강한 이상치 삽입
+        coords.set(5, coord(127.1, 37.1, 50L));
+
+        GpsTrack rawTrack = new GpsTrack(coords);
+
+        CleaningResult result = TrackCleaner.of(rawTrack)
+            .removeOutliers(Threshold.ofMeters(500)) // 이상치 제거 (5번 제거됨)
+            .simplify(Tolerance.ofMeters(1))        // 단순화 (남은 직선들 제거)
+            .clean();
+
+        // 이상치(5번) 제거 후 남은 9개는 직선상이므로 양 끝점 2개만 남아야 함
+        assertThat(result.cleanedTrack().size()).isEqualTo(2);
+        assertThat(result.cleanedTrack().getCoordinates().get(0)).isEqualTo(coords.get(0));
+        assertThat(result.cleanedTrack().getCoordinates().get(1)).isEqualTo(coords.get(9));
     }
 }

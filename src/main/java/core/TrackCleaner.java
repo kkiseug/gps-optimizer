@@ -1,5 +1,6 @@
 package core;
 
+import infrastructure.DouglasPeuckerSimplifier;
 import infrastructure.LengthOutlierRemover;
 import infrastructure.VelocityOutlierRemover;
 import java.util.ArrayList;
@@ -39,8 +40,7 @@ public class TrackCleaner {
     }
 
     public TrackCleaner simplify(Tolerance tolerance) {
-        // TODO: Implement simplification algorithms
-        filters.add(track -> new CleaningResult(track, List.of(new Warning("Simplification with tolerance " + tolerance.meters() + "m is not implemented yet."))));
+        filters.add(new DouglasPeuckerSimplifier(tolerance));
         return this;
     }
 
