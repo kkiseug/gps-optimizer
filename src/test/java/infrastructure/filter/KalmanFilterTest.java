@@ -1,8 +1,8 @@
-package infrastructure;
+package infrastructure.filter;
 
-import core.Coordinate;
-import core.GpsTrack;
-import core.CleaningResult;
+import core.common.Coordinate;
+import core.common.GpsTrack;
+import core.common.CleaningResult;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;

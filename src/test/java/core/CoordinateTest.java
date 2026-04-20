@@ -1,5 +1,6 @@
 package core;
 
+import core.common.Coordinate;
 import exception.CannotCalculateVelocityException;
 import exception.InvalidCoordinateException;
 import java.time.Instant;

@@ -1,5 +1,10 @@
 package core;
 
+import core.common.CleaningResult;
+import core.common.Coordinate;
+import core.common.GpsTrack;
+import core.outlier.Threshold;
+import core.simplifier.Tolerance;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;

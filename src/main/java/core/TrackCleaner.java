@@ -1,9 +1,17 @@
 package core;
 
-import infrastructure.DouglasPeuckerSimplifier;
-import infrastructure.LengthOutlierRemover;
-import infrastructure.VelocityOutlierRemover;
-import infrastructure.KalmanFilter;
+import core.common.Algorithm;
+import core.common.CleaningResult;
+import core.common.GpsTrack;
+import core.common.StepReport;
+import core.common.Warning;
+import core.outlier.Threshold;
+import core.simplifier.Tolerance;
+import core.filter.TrackFilter;
+import infrastructure.simplifier.DouglasPeuckerSimplifier;
+import infrastructure.outlier.LengthOutlierRemover;
+import infrastructure.outlier.VelocityOutlierRemover;
+import infrastructure.filter.KalmanFilter;
 import java.util.ArrayList;
 import java.util.List;
 

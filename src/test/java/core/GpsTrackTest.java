@@ -1,5 +1,7 @@
 package core;
 
+import core.common.Coordinate;
+import core.common.GpsTrack;
 import exception.EmptyTrackException;
 import exception.InsufficientPointsException;
 import exception.InvalidTimestampException;

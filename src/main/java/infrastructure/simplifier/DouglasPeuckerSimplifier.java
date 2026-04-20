@@ -1,10 +1,10 @@
-package infrastructure;
+package infrastructure.simplifier;
 
-import core.Coordinate;
-import core.GpsTrack;
-import core.Simplifier;
-import core.SimplifyResult;
-import core.Tolerance;
+import core.common.Coordinate;
+import core.common.GpsTrack;
+import core.simplifier.Simplifier;
+import core.simplifier.SimplifyResult;
+import core.simplifier.Tolerance;
 import java.util.ArrayList;
 import java.util.List;
 

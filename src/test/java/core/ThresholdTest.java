@@ -1,5 +1,6 @@
 package core;
 
+import core.outlier.Threshold;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

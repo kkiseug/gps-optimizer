@@ -1,9 +1,9 @@
-package infrastructure;
+package infrastructure.outlier;
 
-import core.Coordinate;
-import core.GpsTrack;
-import core.RemoveResult;
-import core.Warning;
+import core.common.Coordinate;
+import core.common.GpsTrack;
+import core.outlier.RemoveResult;
+import core.common.Warning;
 import exception.CannotCalculateVelocityException;
 import java.time.Instant;
 import java.util.ArrayList;

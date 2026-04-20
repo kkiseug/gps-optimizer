@@ -1,8 +1,8 @@
-package infrastructure;
+package infrastructure.outlier;
 
-import core.Coordinate;
-import core.GpsTrack;
-import core.RemoveResult;
+import core.common.Coordinate;
+import core.common.GpsTrack;
+import core.outlier.RemoveResult;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;

@@ -1,5 +1,9 @@
-package core;
+package core.outlier;
 
+import core.common.CleaningResult;
+import core.common.GpsTrack;
+import core.common.StepReport;
+import core.filter.TrackFilter;
 import java.util.List;
 
 public interface OutlierRemover extends TrackFilter {

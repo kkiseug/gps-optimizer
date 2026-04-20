@@ -1,11 +1,10 @@
-package core;
+package core.common;
 
 import exception.EmptyTrackException;
 import exception.InsufficientPointsException;
 import exception.InvalidTimestampException;
 import exception.InvalidTimestampOrderException;
 import exception.InvalidWindowSizeException;
-import java.util.Collections;
 import java.util.List;
 
 public record GpsTrack(

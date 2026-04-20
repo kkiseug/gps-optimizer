@@ -1,6 +1,6 @@
-package core;
+package core.simplifier;
 
-import java.util.List;
+import core.common.GpsTrack;
 
 public record SimplifyResult(
     GpsTrack simplified

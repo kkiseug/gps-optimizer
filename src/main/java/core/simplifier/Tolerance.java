@@ -1,4 +1,4 @@
-package core;
+package core.simplifier;
 
 public record Tolerance(
     double meters

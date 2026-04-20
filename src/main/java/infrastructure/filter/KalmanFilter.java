@@ -1,11 +1,11 @@
-package infrastructure;
+package infrastructure.filter;
 
-import core.CleaningResult;
-import core.Coordinate;
-import core.FilterState;
-import core.GpsTrack;
-import core.StepReport;
-import core.TrackFilter;
+import core.common.CleaningResult;
+import core.common.Coordinate;
+import core.filter.FilterState;
+import core.common.GpsTrack;
+import core.common.StepReport;
+import core.filter.TrackFilter;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,10 +1,10 @@
-package infrastructure;
+package infrastructure.outlier;
 
-import core.Coordinate;
-import core.GpsTrack;
-import core.OutlierRemover;
-import core.RemoveResult;
-import core.Warning;
+import core.common.Coordinate;
+import core.common.GpsTrack;
+import core.outlier.OutlierRemover;
+import core.outlier.RemoveResult;
+import core.common.Warning;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;

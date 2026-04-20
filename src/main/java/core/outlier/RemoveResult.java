@@ -1,5 +1,8 @@
-package core;
+package core.outlier;
 
+import core.common.Coordinate;
+import core.common.GpsTrack;
+import core.common.Warning;
 import java.util.List;
 
 public record RemoveResult(

@@ -1,4 +1,4 @@
-package core;
+package core.filter;
 
 public class FilterState {
 

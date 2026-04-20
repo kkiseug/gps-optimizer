@@ -1,4 +1,4 @@
-package core;
+package core.outlier;
 
 public record Threshold(
     Type type,
