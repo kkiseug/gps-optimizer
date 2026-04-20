@@ -1,6 +1,7 @@
 package core;
 
 import infrastructure.DouglasPeuckerSimplifier;
+import infrastructure.KalmanFilter;
 import infrastructure.LengthOutlierRemover;
 import infrastructure.VelocityOutlierRemover;
 import java.util.ArrayList;
@@ -34,8 +35,9 @@ public class TrackCleaner {
     }
 
     public TrackCleaner smooth(Algorithm algorithm) {
-        // TODO: Implement smoothing algorithms
-        filters.add(track -> new CleaningResult(track, List.of(new Warning(algorithm + " smoothing is not implemented yet."))));
+        if (algorithm.equals(Algorithm.KALMAN)) {
+            filters.add(new KalmanFilter());
+        }
         return this;
     }
 
