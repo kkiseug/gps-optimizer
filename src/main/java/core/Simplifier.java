@@ -9,11 +9,10 @@ public interface Simplifier extends TrackFilter {
     @Override
     default CleaningResult filter(GpsTrack track) {
         SimplifyResult result = simplify(track);
-        StepReport report = new StepReport(
+        StepReport report = StepReport.ofRemoval(
             this.getClass().getSimpleName(),
             track.size(),
-            result.simplified().size(),
-            0
+            result.simplified().size()
         );
         return new CleaningResult(result.simplified(), List.of(), List.of(report));
     }
