@@ -5,7 +5,9 @@ import core.GpsTrack;
 import core.OutlierRemover;
 import core.RemoveResult;
 import core.Warning;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class AbstractOutlierRemover implements OutlierRemover {
@@ -38,39 +40,56 @@ public abstract class AbstractOutlierRemover implements OutlierRemover {
         return warnings;
     }
 
-    protected Coordinate getMedianCoordinate(List<Coordinate> others) {
-        List<Double> latitudes = others.stream()
-            .map(Coordinate::latitude)
-            .sorted()
-            .toList();
+    protected Coordinate getMedianCoordinate(List<Coordinate> coordinates) {
+        int size = coordinates.size();
+        double[] lats = new double[size];
+        double[] lons = new double[size];
 
-        List<Double> longitudes = others.stream()
-            .map(Coordinate::longitude)
-            .sorted()
-            .toList();
+        for (int i = 0; i < size; i++) {
+            Coordinate c = coordinates.get(i);
+            lats[i] = c.latitude();
+            lons[i] = c.longitude();
+        }
 
-        double medianLat = median(latitudes);
-        double medianLon = median(longitudes);
+        Arrays.sort(lats);
+        Arrays.sort(lons);
+
+        double medianLat = median(lats);
+        double medianLon = median(lons);
 
         return new Coordinate(medianLon, medianLat, null);
     }
 
-    protected double median(List<Double> values) {
-        int mid = values.size() / 2;
+    protected Instant getMedianTimestamp(List<Coordinate> coordinates) {
+        int size = coordinates.size();
+        long[] timestamps = new long[size];
 
-        if (values.size() % 2 == 1) {
-            return values.get(mid);
+        for (int i = 0; i < size; i++) {
+            timestamps[i] = coordinates.get(i).timestamp().toEpochMilli();
         }
-        return (values.get(mid - 1) + values.get(mid)) / 2.0;
+
+        Arrays.sort(timestamps);
+        return Instant.ofEpochMilli(medianLong(timestamps));
     }
 
-    protected long medianLong(List<Long> values) {
-        int mid = values.size() / 2;
+    protected double median(double[] values) {
+        int size = values.length;
+        int mid = size / 2;
 
-        if (values.size() % 2 == 1) {
-            return values.get(mid);
+        if (size % 2 == 1) {
+            return values[mid];
         }
-        return (values.get(mid - 1) + values.get(mid)) / 2;
+        return (values[mid - 1] + values[mid]) / 2.0;
+    }
+
+    protected long medianLong(long[] values) {
+        int size = values.length;
+        int mid = size / 2;
+
+        if (size % 2 == 1) {
+            return values[mid];
+        }
+        return (values[mid - 1] + values[mid]) / 2;
     }
 
     protected abstract RemoveResult removeCoordinates(GpsTrack gpsTrack);

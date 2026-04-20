@@ -31,13 +31,7 @@ public class VelocityOutlierRemover extends AbstractOutlierRemover {
             Coordinate target = gpsTrack.get(idx);
 
             Coordinate medianCoordinate = getMedianCoordinate(window);
-
-            Instant medianTimestamp = Instant.ofEpochMilli(medianLong(
-                window.stream()
-                    .map(c -> c.timestamp().toEpochMilli())
-                    .sorted()
-                    .toList()
-            ));
+            Instant medianTimestamp = getMedianTimestamp(window);
 
             try {
                 double velocity = target.velocityFrom(
