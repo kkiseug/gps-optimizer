@@ -12,42 +12,41 @@ import java.util.List;
 
 public class KalmanFilter implements TrackFilter {
 
-    // Q: 프로세스 노이즈 (사람의 움직임이 얼마나 변칙적인가? 작을수록 경로가 직선에 가까워짐)
-    private final double q = 0.00001;
-    // R: 측정 노이즈 (GPS 오차가 어느 정도인가? 클수록 GPS 신호를 덜 믿고 부드러워짐)
-    private final double r = 0.001;
+    private final double q;
+    private final double r;
+
+    public KalmanFilter(double q, double r) {
+        this.q = q;
+        this.r = r;
+    }
 
     @Override
     public CleaningResult filter(GpsTrack track) {
         List<Coordinate> coords = track.getCoordinates();
+        if (coords.size() < 3) {
+            return new CleaningResult(track, List.of(), List.of(new StepReport("KalmanFilter", track.size(), track.size(), 0)));
+        }
 
-        FilterState latFilter = new FilterState(coords.getFirst().latitude());
-        FilterState lonFilter = new FilterState(coords.getFirst().longitude());
+        FilterState latFilter = new FilterState(coords.getFirst().latitude(), q, r);
+        FilterState lonFilter = new FilterState(coords.getFirst().longitude(), q, r);
 
         List<Coordinate> result = new ArrayList<>();
-        result.add(coords.getFirst());
+        result.add(coords.getFirst()); // 시작점 유지
 
-        int smoothed = 0;
         for (int i = 1; i < coords.size() - 1; i++) {
             Coordinate current = coords.get(i);
-            Coordinate prev = result.get(i - 1);
+            Coordinate prev = coords.get(i - 1);
             double dt = Duration.between(prev.timestamp(), current.timestamp()).toMillis() / 1000.0;
 
             double smoothedLat = latFilter.update(current.latitude(), dt);
             double smoothedLon = lonFilter.update(current.longitude(), dt);
 
-            Coordinate smoothedCoord = new Coordinate(smoothedLon, smoothedLat, current.timestamp());
-            if (smoothedCoord.equals(current)) smoothed++;
-            result.add(smoothedCoord);
+            result.add(new Coordinate(smoothedLon, smoothedLat, current.timestamp()));
         }
 
-        result.add(coords.getLast());
+        result.add(coords.getLast()); // 끝점 유지
 
-        int modifiedCount = result.size() - 2;
-        return new CleaningResult(
-            new GpsTrack(result),
-            List.of(),
-            List.of(new StepReport("KalmanFilter", track.size(), result.size(), modifiedCount))
-        );
+        StepReport report = StepReport.ofModification("KalmanFilter", track.size(), result.size() - 2);
+        return new CleaningResult(new GpsTrack(result), List.of(), List.of(report));
     }
 }

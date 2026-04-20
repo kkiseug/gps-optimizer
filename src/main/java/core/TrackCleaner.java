@@ -1,9 +1,9 @@
 package core;
 
 import infrastructure.DouglasPeuckerSimplifier;
-import infrastructure.KalmanFilter;
 import infrastructure.LengthOutlierRemover;
 import infrastructure.VelocityOutlierRemover;
+import infrastructure.KalmanFilter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,9 +34,24 @@ public class TrackCleaner {
         return this;
     }
 
+    /**
+     * 기본 설정으로 칼만 필터 적용 (Q=0.00001, R=0.001)
+     */
     public TrackCleaner smooth(Algorithm algorithm) {
-        if (algorithm.equals(Algorithm.KALMAN)) {
-            filters.add(new KalmanFilter());
+        if (algorithm == Algorithm.KALMAN) {
+            return smooth(algorithm, 0.00001, 0.001);
+        }
+        return this;
+    }
+
+    /**
+     * 상세 설정으로 칼만 필터 적용
+     * @param q 프로세스 노이즈 (작을수록 더 부드러워지지만 반응이 늦어짐)
+     * @param r 측정 노이즈 (클수록 GPS 신호를 덜 믿고 부드러워짐)
+     */
+    public TrackCleaner smooth(Algorithm algorithm, double q, double r) {
+        if (algorithm == Algorithm.KALMAN) {
+            filters.add(new KalmanFilter(q, r));
         }
         return this;
     }

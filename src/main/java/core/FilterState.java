@@ -6,17 +6,19 @@ public class FilterState {
     private double v;
     private double p;
 
-    private final double q = 0.00001;
-    private final double r = 0.001;
+    private final double q; // 프로세스 노이즈
+    private final double r; // 측정 노이즈
 
-    public FilterState(double initialValue) {
+    public FilterState(double initialValue, double q, double r) {
         this.x = initialValue;
         this.v = 0;
         this.p = 1.0;
+        this.q = q;
+        this.r = r;
     }
 
     public double update(double z, double dt) {
-        if (dt <= 0) dt = 0.1; // 최소 시간 간격 보장
+        if (dt <= 0) dt = 0.1;
 
         // 예측
         double x_pred = x + v * dt;
