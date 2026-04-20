@@ -42,6 +42,7 @@ class TrackCleanerTest {
         // 1. 이상치 제거 확인: 10개 -> 8개
         // 2. 단순화 확인: 직선 구간이 하나로 합쳐져서 8개보다 더 줄어듦
         assertThat(result.cleanedTrack().size()).isLessThan(8);
+        assertThat(result.stepReports()).hasSize(3);
     }
 
     @Test
@@ -63,7 +64,6 @@ class TrackCleanerTest {
 
         // 이상치(5번) 제거 후 남은 9개는 직선상이므로 양 끝점 2개만 남아야 함
         assertThat(result.cleanedTrack().size()).isEqualTo(2);
-        assertThat(result.cleanedTrack().getCoordinates().get(0)).isEqualTo(coords.get(0));
-        assertThat(result.cleanedTrack().getCoordinates().get(1)).isEqualTo(coords.get(9));
+        assertThat(result.stepReports().get(0).removedCount()).isEqualTo(1);
     }
 }

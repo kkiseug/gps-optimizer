@@ -47,13 +47,15 @@ public class TrackCleaner {
     public CleaningResult clean() {
         GpsTrack currentTrack = rawTrack;
         List<Warning> allWarnings = new ArrayList<>();
+        List<StepReport> allReports = new ArrayList<>();
 
         for (TrackFilter filter : filters) {
             CleaningResult result = filter.filter(currentTrack);
             currentTrack = result.cleanedTrack();
             allWarnings.addAll(result.warnings());
+            allReports.addAll(result.stepReports());
         }
 
-        return new CleaningResult(currentTrack, allWarnings);
+        return new CleaningResult(currentTrack, allWarnings, allReports);
     }
 }
