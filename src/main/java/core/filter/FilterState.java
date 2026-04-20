@@ -29,7 +29,7 @@ public class FilterState {
         x = x_pred + k * (z - x_pred);
 
         // 업데이트
-        v = (x - x_pred) / dt;
+        v = k * (z - x_pred) / dt;
         p = (1 - k) * p_pred;
 
         return x;

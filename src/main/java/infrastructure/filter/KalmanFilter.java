@@ -36,7 +36,10 @@ public class KalmanFilter implements TrackFilter {
         for (int i = 1; i < coords.size() - 1; i++) {
             Coordinate current = coords.get(i);
             Coordinate prev = coords.get(i - 1);
-            double dt = Duration.between(prev.timestamp(), current.timestamp()).toMillis() / 1000.0;
+            double dt = 1.0;
+            if (track.hasTimestamps()) {
+                dt = Duration.between(prev.timestamp(), current.timestamp()).toMillis() / 1000.0;
+            }
 
             double smoothedLat = latFilter.update(current.latitude(), dt);
             double smoothedLon = lonFilter.update(current.longitude(), dt);
