@@ -2,9 +2,10 @@ package infrastructure.filter;
 
 import core.common.CleaningResult;
 import core.common.Coordinate;
-import core.filter.FilterState;
 import core.common.GpsTrack;
 import core.common.StepReport;
+import core.common.Warning;
+import core.filter.FilterState;
 import core.filter.TrackFilter;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class KalmanFilter implements TrackFilter {
         for (int i = 1; i < coords.size() - 1; i++) {
             Coordinate current = coords.get(i);
             Coordinate prev = coords.get(i - 1);
-            double dt = 1.0;
+            double dt = 0.5;
             if (track.hasTimestamps()) {
                 dt = Duration.between(prev.timestamp(), current.timestamp()).toMillis() / 1000.0;
             }
@@ -50,6 +51,10 @@ public class KalmanFilter implements TrackFilter {
         result.add(coords.getLast()); // 끝점 유지
 
         StepReport report = StepReport.ofModification("KalmanFilter", track.size(), result.size() - 2);
-        return new CleaningResult(new GpsTrack(result), List.of(), List.of(report));
+        List<Warning> warnings = new ArrayList<>();
+        if (!track.hasTimestamps()) {
+            warnings.add(new Warning("Timestamp가 존재하지 않아 KalmanFilter 정확도가 떨어질 수 있습니다."));
+        }
+        return new CleaningResult(new GpsTrack(result), warnings, List.of(report));
     }
 }

@@ -2,8 +2,8 @@ package infrastructure.outlier;
 
 import core.common.Coordinate;
 import core.common.GpsTrack;
-import core.outlier.RemoveResult;
 import core.common.Warning;
+import core.outlier.RemoveResult;
 import exception.CannotCalculateVelocityException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -23,6 +23,14 @@ public class VelocityOutlierRemover extends AbstractOutlierRemover {
 
     @Override
     protected RemoveResult removeCoordinates(GpsTrack gpsTrack) {
+        if (!gpsTrack.hasTimestamps()) {
+            return new RemoveResult(
+                gpsTrack,
+                List.of(),
+                List.of(new Warning("Timestamp가 없어 VelocityOutlierRemover 단계를 건너뜁니다."))
+            );
+        }
+
         List<Coordinate> cleaned = new ArrayList<>();
         List<Coordinate> removed = new ArrayList<>();
 
