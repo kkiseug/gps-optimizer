@@ -1,11 +1,21 @@
 plugins {
-    id("java")
+    id("java-library")
     id("application")
     id("me.champeau.jmh") version "0.7.2"
+    id("maven-publish")
+    id("signing")
 }
 
-group = "music"
-version = "1.0-SNAPSHOT"
+group = "io.github.kkiseug"
+version = "0.1.0"
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
 
 repositories {
     mavenCentral()
@@ -19,12 +29,54 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-
-    // Source: https://mvnrepository.com/artifact/org.assertj/assertj-core
     testImplementation("org.assertj:assertj-core:3.27.7")
 
     jmh("org.openjdk.jmh:jmh-core:1.37")
     jmh("org.openjdk.jmh:jmh-generator-annprocess:1.37")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+            pom {
+                name.set("GpsOptimizer")
+                description.set("A high-performance Java library for GPS track optimization (outlier removal, Kalman smoothing, simplification).")
+                url.set("https://github.com/kkiseug/gps-optimizer")
+                licenses {
+                    license {
+                        name.set("The MIT License")
+                        url.set("https://opensource.org/licenses/MIT")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("kkiseug")
+                        name.set("kkiseug")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:github.com/kkiseug/gps-optimizer.git")
+                    developerConnection.set("scm:git:ssh://github.com/kkiseug/gps-optimizer.git")
+                    url.set("https://github.com/kkiseug/gps-optimizer")
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = "centralPortal"
+            url = uri("https://central.sonatype.com/api/v1/publisher/upload")
+            credentials {
+                username = project.findProperty("centralUsername")?.toString()
+                password = project.findProperty("centralPassword")?.toString()
+            }
+        }
+    }
+}
+
+signing {
+    sign(publishing.publications["mavenJava"])
 }
 
 jmh {
