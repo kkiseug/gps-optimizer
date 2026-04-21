@@ -4,6 +4,7 @@ plugins {
     id("me.champeau.jmh") version "0.7.2"
     id("maven-publish")
     id("signing")
+    id("com.gradleup.nmcp") version "0.1.1"
 }
 
 group = "io.github.kkiseug"
@@ -63,15 +64,13 @@ publishing {
             }
         }
     }
-    repositories {
-        maven {
-            name = "centralPortal"
-            url = uri("https://central.sonatype.com/api/v1/publisher/upload")
-            credentials {
-                username = project.findProperty("centralUsername")?.toString()
-                password = project.findProperty("centralPassword")?.toString()
-            }
-        }
+}
+
+nmcp {
+    centralPortal {
+        username = project.findProperty("centralUsername")?.toString() ?: ""
+        password = project.findProperty("centralPassword")?.toString() ?: ""
+        publishingType = "AUTOMATIC"
     }
 }
 

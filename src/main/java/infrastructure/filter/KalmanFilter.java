@@ -28,11 +28,11 @@ public class KalmanFilter implements TrackFilter {
             return new CleaningResult(track, List.of(), List.of(new StepReport("KalmanFilter", track.size(), track.size(), 0)));
         }
 
-        FilterState latFilter = new FilterState(coords.getFirst().latitude(), q, r);
-        FilterState lonFilter = new FilterState(coords.getFirst().longitude(), q, r);
+        FilterState latFilter = new FilterState(coords.get(0).latitude(), q, r);
+        FilterState lonFilter = new FilterState(coords.get(0).longitude(), q, r);
 
         List<Coordinate> result = new ArrayList<>();
-        result.add(coords.getFirst()); // 시작점 유지
+        result.add(coords.get(0)); // 시작점 유지
 
         for (int i = 1; i < coords.size() - 1; i++) {
             Coordinate current = coords.get(i);
@@ -48,7 +48,7 @@ public class KalmanFilter implements TrackFilter {
             result.add(new Coordinate(smoothedLon, smoothedLat, current.timestamp()));
         }
 
-        result.add(coords.getLast()); // 끝점 유지
+        result.add(coords.get(coords.size() - 1)); // 끝점 유지
 
         StepReport report = StepReport.ofModification("KalmanFilter", track.size(), result.size() - 2);
         List<Warning> warnings = new ArrayList<>();

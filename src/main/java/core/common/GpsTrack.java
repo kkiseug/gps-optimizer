@@ -57,7 +57,7 @@ public record GpsTrack(
     }
 
     public boolean hasTimestamps() {
-        Coordinate first = coordinates.getFirst();
+        Coordinate first = coordinates.get(0);
         return first.hasTimestamp();
     }
 
@@ -82,7 +82,7 @@ public record GpsTrack(
     }
 
     private static void validateAllCoordinatesHasTimeStamp(List<Coordinate> coordinates) {
-        boolean hasTimestamp = coordinates.getFirst().hasTimestamp();
+        boolean hasTimestamp = coordinates.get(0).hasTimestamp();
         for (Coordinate coordinate : coordinates) {
             if (hasTimestamp != coordinate.hasTimestamp()) {
                 throw new InvalidTimestampException("타임스탬프는 아예 없거나, 모두 존재해야 합니다.");
@@ -91,7 +91,7 @@ public record GpsTrack(
     }
 
     private static void validateTimestampsOrder(List<Coordinate> coordinates) {
-        boolean hasTimestamp = coordinates.getFirst().hasTimestamp();
+        boolean hasTimestamp = coordinates.get(0).hasTimestamp();
         if (!hasTimestamp) {
             return;
         }
